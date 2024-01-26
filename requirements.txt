@@ -6,3 +6,4 @@ nltk
 requests
 google-cloud-storage
 gunicorn==20.1.0
+matplotlib
