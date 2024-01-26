@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, json
 from datetime import datetime
 import pandas as pd
 import time
@@ -9,34 +9,39 @@ import ops
 
 app = Flask(__name__)
 
-rss_feeds = {
-    'Blog': {
-        'tds': ['https://towardsdatascience.com/feed'],
-        'mlm': ['http://feeds.feedburner.com/MachineLearningMastery'],
-        'gai': ['http://googleaiblog.blogspot.com/atom.xml']
-    },
+exc_map = {
+    'blog': ["model", "data", "data science", "science", "using", "photo", "image", "author", "updated", "python", "computer"
+            "dataframes", "dataframe", "science", "artificial", "intelligence", "world", "machine", "learning", "ml"
+            "google", "research", "task", "help", "free", "courses",
+            ],
+    'finance': ["money", "stock"],
+    'science': ["science", "new"],
+    'news': ["news", "say", "cnet", "best", "new"]
 }
-exc_map = {'Blog' : ["model", "data", "data science", "science", "using", "photo", "image", "author", "updated", "python", "language", "computer"
-            "dataframes", "dataframe", "science", "artificial", "intelligence", "ai", "world", "machine", "learning", "ml"
-            "google", "research", "task", "help"
-            ]
-           }
+
+
+
 bucket_name = 'a-storyverse'
 func_start_time = time.time()
 today_date = datetime.today().strftime('%Y%m%d')
+json_file_path='sources.json'
+with open(json_file_path, 'r') as json_file:
+    sources = json.load(json_file)
+
 
 @app.route('/fetchstory')
 def fetch_story():
-    story_type = request.args.get('type')
+    print(request.args)
+    story_type = request.args.get('type').lower()
     print("Starting daily story fetch...", story_type)
     start_time = time.time()
-    soups = ops.fetch_article_soups(rss_feeds[story_type])
-    exc_list = exc_map[story_type]
+    soups = ops.fetch_article_soups(sources, [story_type])
+    exc_list = exc_map[story_type.lower()]
     data = ops.process_article_soups(soups, exc_list)
-    ops.do_text_cleaning(data)
+    ops.do_text_preprocessing(data)
     data.to_csv(today_date + '.csv', index=False)
-    filepath = today_date + '.csv'
-    ops.upload_blob(data, filepath, bucket_name)
+    filepath = story_type.lower()+'/'+today_date + '.csv'
+    ops.upload_blob(filepath, bucket_name)
     end_time = time.time()
     elapsed_time = end_time - start_time
     total_elapsed_time = end_time - func_start_time
@@ -52,4 +57,4 @@ def home():
     return jsonify({'API':"Topicverse"})
 
 if __name__ == '__main__':
-	app.run(host="0.0.0.0", port=8080)
+    app.run(debug=True)

@@ -7,7 +7,7 @@ import nltk
 import os
 import pandas as pd
 import pandas as pd
-# import pyLDAvis
+import pyLDAvis
 import re
 import requests
 import requests
@@ -25,25 +25,27 @@ from io import BytesIO
 from nltk import word_tokenize, WordNetLemmatizer
 from nltk.corpus import stopwords
 from pathlib import Path
-# from pyLDAvis import gensim
+from pyLDAvis import gensim
 from wordcloud import WordCloud
 from google.cloud import storage
 import ops
 
 
-def fetch_article_soups(rss_urls):
+def fetch_article_soups(sources, feed_types):
     start_time = time.time()
+    rss_urls = [url for feed_type in feed_types for url in sources.get(feed_type, [])]
     soup_list = []
-    for key, subcategory_urls in rss_urls.items():
-        for rss_url in subcategory_urls:
-            soup = fetch_soup(rss_url)
+    for feed_type in feed_types:
+        for url in sources.get(feed_type, []):
+            soup = fetch_soup(url)
             if soup:
-                soup_list.append((key, soup))
+                soup_list.append((feed_type.lower(),soup))
 
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"RSS Fetch Time: {elapsed_time} seconds")
     return soup_list
+
 
 
 def fetch_soup(rss_url):
@@ -56,109 +58,75 @@ def fetch_soup(rss_url):
         return None
 
 
+
 def process_article_soups(soup_list, exc_list):
     article_list = []
-    start_time = time.time()
     for souple in soup_list:
-        article_list += get_articles(souple[0], souple[1], exc_list)
+        article_list += get_articles(souple, exc_list)
 
     print("\nNumber of articles found: ", len(article_list), '\n')
 
     df = pd.DataFrame(article_list)
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    print(f"Article Processing Time: {elapsed_time} seconds")
     return df
 
-
-def do_text_cleaning(df):
+def do_text_preprocessing(df):
     start_time = time.time()
     df['Combined_Text'] = df['Title'] + ' ' + df['Body']
-
     def preprocess_text(text):
         tokens = word_tokenize(text.lower())
         tokens = [word for word in tokens if word.isalnum() and word not in stopwords.words('english')]
         return tokens
-
-    df['Processed_Text'] = df['Combined_Text'].apply(preprocess_text)
-    df['Processed_Title'] = df['Title'].apply(preprocess_text)
+    df['PText'] = df['Combined_Text'].apply(preprocess_text)
+    df['PTitle'] = df['Title'].apply(preprocess_text)
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"Text Clean/Tokenizing Time: {elapsed_time} seconds")
 
-
-def get_articles(key, soup, exc_list):
-    alist = []
-    if key not in ['gai']:
-        articles = soup.findAll('item')
-        for a in articles:
+def get_articles(souple, exc_list):
+    alist=[]
+    feed_type, soup = souple
+    articles = soup.findAll('item')
+    today_date = datetime.today().strftime('%Y%m%d')
+    for a in articles:
+        try:
             title = a.find('title').text if a.find('title') else ''
             link = a.find('link').text if a.find('link') else ''
-            pub_date_tag = a.find('pubDate') or a.find('pubdate')
+            pub_date_tag = a.find('pubDate') or a.find('pubdate') or a.find('published')
             # published_date = parse_date(pub_date_tag, today_date)
             published_date = pub_date_tag.text
-            body_tag = get_body(key, a)
+            body_tag = get_body(a)
             body_text = body_tag.get_text(strip=True) if body_tag else ''
             acbody = clean_text(body_text[:800], exc_list)
+            otitle = title
             title = clean_text(title, exc_list)
             acbody = '' if len(acbody) < 100 else acbody
-            article = {'Title': title, 'Body': acbody, 'Link': link, 'Date': published_date}
+            article = {'OTitle': otitle, 'Title': title, 'Body': acbody, 'Link': link, 'Date': published_date, 'Type': feed_type, 'PDate': today_date}
             alist.append(article)
-
-    if key in ['gai']:
-        articles = soup.findAll('entry')
-        for a in articles:
-            title = a.find('title').text if a.find('title') else ''
-            link = a.find('link').text if a.find('link') and a.find('link').text != '' else a.find('id').text if a.find(
-                'id') else ''
-            pub_date_tag = a.find('published')
-            published_date = pub_date_tag.text
-            body_tag = get_body(key, a)
-            body_text = body_tag.get_text(strip=True) if body_tag else ''
-            acbody = clean_text(body_text[:800], exc_list)
-            title = clean_text(title, exc_list)
-            acbody = '' if len(acbody) < 100 else acbody
-            article = {'Title': title, 'Body': acbody, 'Link': link, 'Date': published_date}
-            alist.append(article)
+        except:
+            something = title if title else ''
+            print("Article named: ", something, " : content not found.", sys.exc_info()[1])
 
     return alist
 
-
-def get_body(key, a):
+def get_body(a):
     # Handles TDS, MLM, Google AI
-    b_tag = 'body' if a.find('body') else 'content:encoded' if a.find('content:encoded') else None
+    b_tag = 'body' if a.find('body') else 'content:encoded' if a.find('content:encoded') else 'description' if a.find('description') else None
 
     if not b_tag:
-        if key not in ['gai'] and a.find('description'):
-            html_body = a.find('description').text
-            unescaped_html = html.unescape(html_body)
-            body = BeautifulSoup(unescaped_html, 'html.parser')
-            x = body.findAll('p', 'medium-feed-snippet')
-            if not len(x):
-                x = body.findAll('p')
-            b = x[0] if len(x) else None
-        if key in ['gai']:
-            if a.find('content'):
-                html_body = a.find('content').text
-                unescaped_html = html.unescape(html_body)
-                body = BeautifulSoup(unescaped_html, 'html.parser')
-                x = body.findAll('p')
-                b = x[0] if len(x) else None
+        html_body = a.find('description').text
+        unescaped_html = html.unescape(html_body)
+        body = BeautifulSoup(unescaped_html, 'html.parser')
+        x = body.findAll('p', 'medium-feed-snippet')
+        if not len(x):
+            x = body.findAll('p')
+        b = x[0] if len(x) else None
     else:
         b = a.find(b_tag)
     return b
 
-
 def clean_text(text, exc_list):
-    root = os.path.dirname(os.path.abspath(__file__))
-    download_dir = os.path.join(root, 'nltk_data')
-    # os.chdir(download_dir)
-    nltk.data.path.append(download_dir)
-
     text = text.lower()
-    text.replace("\u00A0", " ").replace('.', '').replace(',', '').replace(':', ' ').replace('\'', '').replace("...",
-                                                                                                              " ").replace(
-        "  ", " ").strip()
+    text.replace("\u00A0", " ").replace('.','').replace(',','').replace(':',' ').replace('\'','').replace("..."," ").replace("  "," ").strip()
     pattern = r'<\/[^>]+>$'
     match = re.search(pattern, text)
     if match:
@@ -177,7 +145,8 @@ def clean_text(text, exc_list):
     return filtered_text
 
 
-def upload_blob(df, filename, bucket_name):
+
+def upload_blob(filename, bucket_name):
     storage_client = storage.Client()
     try:
         bucket = storage_client.get_bucket(bucket_name)
@@ -221,33 +190,33 @@ def do_wordclouds(data, fields):
     return res
 
 
-# def do_lda_html(data, field):
-#     field = 'Processed_Text'
-#     processed_titles = data[field].apply(eval)
-#     dictionary = Dictionary(processed_titles)
-#     corpus = [dictionary.doc2bow(title) for title in processed_titles]
-#     coherence_values = []
-#     model_list = []
-#     for num_topics in range(1, round(len(processed_titles)/5)):
-#         lda_model = LdaModel(corpus, num_topics=num_topics, id2word=dictionary)
-#         model_list.append(lda_model)
-#         coherencemodel = CoherenceModel(model=lda_model, texts=data[field].apply(eval).to_list(), dictionary=dictionary, coherence='c_v')
-#         coherence_values.append(coherencemodel.get_coherence())
+def do_lda_html(data, field):
+    field = 'Processed_Text'
+    processed_titles = data[field].apply(eval)
+    dictionary = Dictionary(processed_titles)
+    corpus = [dictionary.doc2bow(title) for title in processed_titles]
+    coherence_values = []
+    model_list = []
+    for num_topics in range(1, round(len(processed_titles)/5)):
+        lda_model = LdaModel(corpus, num_topics=num_topics, id2word=dictionary)
+        model_list.append(lda_model)
+        coherencemodel = CoherenceModel(model=lda_model, texts=data[field].apply(eval).to_list(), dictionary=dictionary, coherence='c_v')
+        coherence_values.append(coherencemodel.get_coherence())
 
-#     optimal_num_topics = coherence_values.index(max(coherence_values)) + 1
-#     optimal_lda_model = LdaModel(corpus, num_topics=optimal_num_topics, id2word=dictionary)
+    optimal_num_topics = coherence_values.index(max(coherence_values)) + 1
+    optimal_lda_model = LdaModel(corpus, num_topics=optimal_num_topics, id2word=dictionary)
 
-#     print(f"Optimal Number of Topics: {optimal_num_topics}")
-#     for topic_num in range(optimal_num_topics):
-#         print(f"Topic {topic_num + 1}: {optimal_lda_model.print_topic(topic_num)}")
+    print(f"Optimal Number of Topics: {optimal_num_topics}")
+    for topic_num in range(optimal_num_topics):
+        print(f"Topic {topic_num + 1}: {optimal_lda_model.print_topic(topic_num)}")
 
-#     if optimal_num_topics > 1:
-#         prepared_data = pyLDAvis.gensim.prepare(optimal_lda_model, corpus, dictionary)
-#         html_string = pyLDAvis.prepared_data_to_html(prepared_data)
-#         html_path = Path("output/lda_viz.html")
-#         pyLDAvis.save_html(prepared_data, str(html_path))
-#         return html_string
-#     return None
+    if optimal_num_topics > 1:
+        prepared_data = pyLDAvis.gensim.prepare(optimal_lda_model, corpus, dictionary)
+        html_string = pyLDAvis.prepared_data_to_html(prepared_data)
+        html_path = Path("output/lda_viz.html")
+        pyLDAvis.save_html(prepared_data, str(html_path))
+        return html_string
+    return None
 
 
 def do_dmm_analysis(dictionary, texts):
