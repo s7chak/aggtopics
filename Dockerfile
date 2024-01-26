@@ -10,12 +10,11 @@ COPY . /app
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt
 
-# Make port 8091 available to the world outside this container
-EXPOSE 8081
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
 
 # Define environment variable
 ENV NAME AggTopics
-ENV PORT 8081
 
 # Run app.py when the container launches
 CMD ["python", "app.py"]
