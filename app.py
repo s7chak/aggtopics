@@ -21,7 +21,7 @@ exc_map = {'Blog' : ["model", "data", "data science", "science", "using", "photo
             "google", "research", "task", "help"
             ]
            }
-bucket_name = 'story-store'
+bucket_name = 'a-storyverse'
 func_start_time = time.time()
 today_date = datetime.today().strftime('%Y%m%d')
 
