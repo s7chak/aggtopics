@@ -1,11 +1,11 @@
 steps:
 # Build the Docker image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/topicverse/aggtopics', '.']
+  args: ['build', '-t', 'gcr.io/topicverse/aggtopics]
 
 # Push the Docker image to Google Container Registry (GCR)
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/topicverse/aggtopics']
+  args: ['push', 'gcr.io/topicverse/aggtopics]
 
 # Deploy the app to Cloud Run
 - name: 'gcr.io/cloud-builders/gcloud'
@@ -17,5 +17,3 @@ steps:
   - '--platform=managed'
   - '--region=us-central1'  # Change to your desired region
   - '--allow-unauthenticated'
-
-# Add more steps as needed
