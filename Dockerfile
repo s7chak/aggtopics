@@ -15,6 +15,7 @@ EXPOSE 8081
 
 # Define environment variable
 ENV NAME AggTopics
+ENV PORT 8081
 
 # Run app.py when the container launches
 CMD ["python", "app.py"]
