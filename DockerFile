@@ -9,7 +9,11 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 COPY . .
 
 # Expose Flask app port
-EXPOSE 5000
+EXPOSE 8080
 
 # Start Flask app when the container runs
 CMD ["python", "app.py"]
+
+
+
+
