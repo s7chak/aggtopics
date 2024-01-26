@@ -28,7 +28,6 @@ from pathlib import Path
 # from pyLDAvis import gensim
 from wordcloud import WordCloud
 from google.cloud import storage
-from google.cloud import pubsub_v1
 import ops
 
 
