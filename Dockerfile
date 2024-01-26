@@ -11,7 +11,7 @@ COPY . /app
 RUN pip install -r requirements.txt
 
 # Make port 8091 available to the world outside this container
-EXPOSE 8080
+EXPOSE 8081
 
 # Define environment variable
 ENV NAME AggTopics
