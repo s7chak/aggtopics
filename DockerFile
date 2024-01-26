@@ -12,7 +12,9 @@ COPY . .
 EXPOSE 8080
 
 # Start Flask app when the container runs
-CMD ["python", "app.py"]
+# CMD ["python", "app.py"]
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
 
 
 
