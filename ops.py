@@ -7,7 +7,7 @@ import nltk
 import os
 import pandas as pd
 import pandas as pd
-import pyLDAvis
+# import pyLDAvis
 import re
 import requests
 import requests
@@ -25,7 +25,7 @@ from io import BytesIO
 from nltk import word_tokenize, WordNetLemmatizer
 from nltk.corpus import stopwords
 from pathlib import Path
-from pyLDAvis import gensim
+# from pyLDAvis import gensim
 from wordcloud import WordCloud
 from google.cloud import storage
 from google.cloud import pubsub_v1
@@ -222,33 +222,33 @@ def do_wordclouds(data, fields):
     return res
 
 
-def do_lda_html(data, field):
-    field = 'Processed_Text'
-    processed_titles = data[field].apply(eval)
-    dictionary = Dictionary(processed_titles)
-    corpus = [dictionary.doc2bow(title) for title in processed_titles]
-    coherence_values = []
-    model_list = []
-    for num_topics in range(1, round(len(processed_titles)/5)):
-        lda_model = LdaModel(corpus, num_topics=num_topics, id2word=dictionary)
-        model_list.append(lda_model)
-        coherencemodel = CoherenceModel(model=lda_model, texts=data[field].apply(eval).to_list(), dictionary=dictionary, coherence='c_v')
-        coherence_values.append(coherencemodel.get_coherence())
+# def do_lda_html(data, field):
+#     field = 'Processed_Text'
+#     processed_titles = data[field].apply(eval)
+#     dictionary = Dictionary(processed_titles)
+#     corpus = [dictionary.doc2bow(title) for title in processed_titles]
+#     coherence_values = []
+#     model_list = []
+#     for num_topics in range(1, round(len(processed_titles)/5)):
+#         lda_model = LdaModel(corpus, num_topics=num_topics, id2word=dictionary)
+#         model_list.append(lda_model)
+#         coherencemodel = CoherenceModel(model=lda_model, texts=data[field].apply(eval).to_list(), dictionary=dictionary, coherence='c_v')
+#         coherence_values.append(coherencemodel.get_coherence())
 
-    optimal_num_topics = coherence_values.index(max(coherence_values)) + 1
-    optimal_lda_model = LdaModel(corpus, num_topics=optimal_num_topics, id2word=dictionary)
+#     optimal_num_topics = coherence_values.index(max(coherence_values)) + 1
+#     optimal_lda_model = LdaModel(corpus, num_topics=optimal_num_topics, id2word=dictionary)
 
-    print(f"Optimal Number of Topics: {optimal_num_topics}")
-    for topic_num in range(optimal_num_topics):
-        print(f"Topic {topic_num + 1}: {optimal_lda_model.print_topic(topic_num)}")
+#     print(f"Optimal Number of Topics: {optimal_num_topics}")
+#     for topic_num in range(optimal_num_topics):
+#         print(f"Topic {topic_num + 1}: {optimal_lda_model.print_topic(topic_num)}")
 
-    if optimal_num_topics > 1:
-        prepared_data = pyLDAvis.gensim.prepare(optimal_lda_model, corpus, dictionary)
-        html_string = pyLDAvis.prepared_data_to_html(prepared_data)
-        html_path = Path("output/lda_viz.html")
-        pyLDAvis.save_html(prepared_data, str(html_path))
-        return html_string
-    return None
+#     if optimal_num_topics > 1:
+#         prepared_data = pyLDAvis.gensim.prepare(optimal_lda_model, corpus, dictionary)
+#         html_string = pyLDAvis.prepared_data_to_html(prepared_data)
+#         html_path = Path("output/lda_viz.html")
+#         pyLDAvis.save_html(prepared_data, str(html_path))
+#         return html_string
+#     return None
 
 
 def do_dmm_analysis(dictionary, texts):
