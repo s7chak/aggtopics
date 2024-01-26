@@ -2,8 +2,11 @@ functions-framework==3.*
 pandas
 bs4
 lxml
+gensim
+spacy
 nltk
 requests
 google-cloud-storage
 gunicorn==20.1.0
 matplotlib
+wordcloud
