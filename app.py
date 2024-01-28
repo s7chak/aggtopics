@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import requests
 import base64
 import ops
+import sys
 
 app = Flask(__name__)
 
@@ -47,6 +48,7 @@ def fetch_story():
         # ops.save_doc(data, filepath) # local
         os.remove(today_date + '.csv')
     except:
+    	print(sys.exc_info())
         return jsonify({'API': "Topicverse", 'call': "fetchstory:" + story_type, "status": 'Failure'})
     end_time = time.time()
     elapsed_time = end_time - start_time
