@@ -30,7 +30,7 @@ from wordcloud import WordCloud
 from google.cloud import storage
 import ops
 
-
+#test comment
 def fetch_article_soups(sources, feed_types):
     start_time = time.time()
     rss_urls = [url for feed_type in feed_types for url in sources.get(feed_type, [])]
