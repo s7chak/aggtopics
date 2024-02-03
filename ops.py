@@ -25,11 +25,6 @@ from nltk.corpus import stopwords
 from pathlib import Path
 from wordcloud import WordCloud
 
-root = os.path.dirname(os.path.abspath(__file__))
-download_dir = os.path.join(root, 'nltk_data')
-nltk.data.load(
-    os.path.join(download_dir, 'tokenizers/punkt/english.pickle')
-)
 
 
 def fetch_article_soups(sources, feed_types):

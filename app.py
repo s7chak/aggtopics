@@ -16,8 +16,20 @@ today_date = datetime.today().strftime('%Y%m%d')
 json_file_path='sources.json'
 with open(json_file_path, 'r') as json_file:
     sources = json.load(json_file)
+    print('~~~Sources loaded~~~')
 with open(json_file_path, 'r') as json_file:
     exc_map = json.load(json_file)
+    print('~~~Exclusions loaded~~~')
+
+try:
+    root = os.path.dirname(os.path.abspath(__file__))
+    download_dir = os.path.join(root, 'nltk_data')
+    nltk.data.load(
+        os.path.join(download_dir, 'tokenizers/punkt/english.pickle')
+    )
+    print('~~~NLTK loaded~~~')
+except:
+    print("NLTK Load failure.")
 
 @app.route('/fetchstory', methods=['POST', 'GET'])
 def fetch_story():
