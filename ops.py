@@ -145,13 +145,15 @@ def clean_text(text, exc_list):
 
 def upload_blob(filename, bucket_name):
     storage_client = storage.Client()
+    print('Saving to bucket')
     try:
         bucket = storage_client.get_bucket(bucket_name)
         blob_data = bucket.blob(f'{filename}')
         blob_data.upload_from_filename(filename)
     except:
         print("Could not upload to bucket.")
-    os.remove(filename)
+    print('File saved.')
+
 
 def generate_wordcloud(text):
     wordcloud = WordCloud(width=1200, height=900, background_color='white').generate(text)

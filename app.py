@@ -34,7 +34,7 @@ with open(json_file_path, 'r') as json_file:
 def fetch_story():
     print(request.args)
     story_type = request.args.get('type').lower()
-    print("Starting daily story fetch...", story_type)
+    print("Starting daily story fetch: ", story_type)
     start_time = time.time()
     try:
         soups = ops.fetch_article_soups(sources, [story_type])
