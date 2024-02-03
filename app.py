@@ -5,7 +5,6 @@ import time
 from bs4 import BeautifulSoup
 import requests
 import base64
-import ops
 import sys
 import os
 import nltk
@@ -41,6 +40,7 @@ def fetch_story():
     print("Starting daily story fetch: ", story_type)
     start_time = time.time()
     try:
+        import ops
         soups = ops.fetch_article_soups(sources, [story_type])
         exc_list = exc_map[story_type]
         data = ops.process_article_soups(soups, exc_list)
