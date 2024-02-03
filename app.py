@@ -35,7 +35,7 @@ def fetch_story():
 	''' 
 		Story fetch daily run 
 	'''
-    print(request.args)
+    # print(request.args)
     story_type = request.args.get('type').lower()
     print("Starting daily story fetch...", story_type)
     start_time = time.time()
