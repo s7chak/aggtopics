@@ -8,6 +8,7 @@ import base64
 import ops
 import sys
 import os
+import nltk
 
 app = Flask(__name__)
 
