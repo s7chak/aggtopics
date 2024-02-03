@@ -151,7 +151,7 @@ def upload_blob(filename, folder, bucket_name):
         blob_data = bucket.blob(f'{filename}')
         blob_data.upload_from_filename(folder+'/'+filename)
     except:
-        print("Could not upload to bucket.", str(sys.exc_iinfo()))
+        print("Could not upload to bucket.", str(sys.exc_info()))
         return
     print('File saved.')
 
