@@ -14,7 +14,6 @@ from bs4 import BeautifulSoup
 from collections import Counter
 from datetime import datetime
 from flask import Flask, request
-from google.cloud import storage
 # from pyLDAvis import gensim
 # from gensim.corpora import Dictionary
 # from gensim.models import LdaModel, CoherenceModel
@@ -141,15 +140,18 @@ def clean_text(text, exc_list):
     filtered_text = ' '.join(filtered_words)
     return filtered_text
 
+def save_doc(df, filepath): # local
+    df.to_csv(filepath)
 
-
-def upload_blob(filename, folder, bucket_name):
+from google.cloud import storage
+def upload_blob(data, filename, folder, bucket_name):
     storage_client = storage.Client()
     print('Saving to bucket')
     try:
         bucket = storage_client.get_bucket(bucket_name)
         blob_data = bucket.blob(f'{filename}')
-        blob_data.upload_from_filename(folder+'/'+filename)
+        # blob_data.upload_from_filename(folder+'/'+filename)
+        blob_data.upload_from_string(data.to_csv(), 'text/csv')
     except:
         print("Could not upload to bucket.", str(sys.exc_info()))
         return

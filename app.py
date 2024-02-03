@@ -8,7 +8,7 @@ import base64
 import sys
 import os
 import nltk
-
+import ops
 app = Flask(__name__)
 
 bucket_name = 'a-storyverse'
@@ -32,7 +32,7 @@ try:
 except:
     print("NLTK Load failure.", str(sys.exc_info()))
 
-@app.route('/fetchstory', methods=['POST'])
+@app.route('/fetchstory', methods=['POST', 'GET'])
 def fetch_story():
     request_data = request.get_json()
     story_type = request_data.get('type').lower()
@@ -40,14 +40,14 @@ def fetch_story():
     print("Starting daily story fetch: ", story_type)
     start_time = time.time()
     try:
-        import ops
+
         soups = ops.fetch_article_soups(sources, [story_type])
         exc_list = exc_map[story_type]
         data = ops.process_article_soups(soups, exc_list)
         ops.do_text_preprocessing(data)
-        data.to_csv(today_date + '.csv', index=False)
+        # data.to_csv(today_date + '.csv', index=False)
         filepath = today_date + '.csv'
-        ops.upload_blob(filepath, story_type, bucket_name)
+        ops.upload_blob(data, filepath, story_type, bucket_name)
         # ops.save_doc(data, filepath) # local
         os.remove(today_date + '.csv')
     except:
