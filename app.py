@@ -32,7 +32,9 @@ with open(json_file_path, 'r') as json_file:
 
 @app.route('/fetchstory', methods=['POST','GET'])
 def fetch_story():
-	''' Story fetch daily run '''
+	''' 
+		Story fetch daily run 
+	'''
     print(request.args)
     story_type = request.args.get('type').lower()
     print("Starting daily story fetch...", story_type)
