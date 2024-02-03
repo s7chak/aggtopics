@@ -29,7 +29,7 @@ try:
     )
     print('~~~NLTK loaded~~~')
 except:
-    print("NLTK Load failure.")
+    print("NLTK Load failure.", str(sys.exc_info()))
 
 @app.route('/fetchstory', methods=['POST', 'GET'])
 def fetch_story():
