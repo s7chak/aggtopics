@@ -8,32 +8,20 @@ import base64
 import ops
 import sys
 
-app = Flask(__name__)
-
-exc_map = {
-    'blog': ["model", "data", "data science", "science", "using", "photo", "image", "author", "updated", "python", "computer"
-            "dataframes", "dataframe", "science", "artificial", "intelligence", "world", "machine", "learning", "ml"
-            "google", "research", "task", "help", "free", "courses",
-            ],
-    'finance': ["money", "stock"],
-    'science': ["science", "new"],
-    'news': ["news", "say", "cnet", "best", "new"]
-}
-
-
 
 bucket_name = 'a-storyverse'
 func_start_time = time.time()
 today_date = datetime.today().strftime('%Y%m%d')
 json_file_path='sources.json'
+
 with open(json_file_path, 'r') as json_file:
     sources = json.load(json_file)
+with open(json_file_path, 'r') as json_file:
+    exc_map = json.load(json_file)
 
-
-@app.route('/fetchstory', methods=['POST','GET'])
-def fetch_story():
-    print(request.args)
-    story_type = request.args.get('type').lower()
+# @app.route('/fetchstory', methods=['POST'])
+def fetch_story(type):
+    story_type = type
     print("Starting daily story fetch: ", story_type)
     start_time = time.time()
     try:
@@ -48,21 +36,24 @@ def fetch_story():
         os.remove(today_date + '.csv')
     except:
         print(str(sys.exc_info()))
-        return jsonify({'API': "Topicverse", 'call': "fetchstory:" + story_type, "status": 'Failure'})
+        # return jsonify({'API': "Topicverse", 'call': "fetchstory:" + story_type, "status": 'Failure'})
     end_time = time.time()
     elapsed_time = end_time - start_time
     total_elapsed_time = end_time - func_start_time
     print(f"Daily Story Record Time: {elapsed_time} seconds")
     print(f"Run Time: {total_elapsed_time} seconds")
     print(f"Story fetch ended for type:",story_type)
-    return jsonify({'API':"Topicverse", 'call': "fetchstory:"+story_type, "status": 'Complete'})
+    # return jsonify({'API':"Topicverse", 'call': "fetchstory:"+story_type, "status": 'Complete'})
+
+
+fetch_story('blog')
 
 
 
-@app.route('/')
-def home():
-    print('Reached API home')
-    return jsonify({"API":"Topicverse", "Version": '1.0'})
+# @app.route('/')
+# def home():
+#     print('Reached API home')
+#     return jsonify({"API":"Topicverse", "Version": '1.0'})
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=8080)
