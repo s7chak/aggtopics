@@ -32,10 +32,7 @@ with open(json_file_path, 'r') as json_file:
 
 @app.route('/fetchstory', methods=['POST','GET'])
 def fetch_story():
-	''' 
-		Story fetch daily run 
-	'''
-    # print(request.args)
+    print(request.args)
     story_type = request.args.get('type').lower()
     print("Starting daily story fetch...", story_type)
     start_time = time.time()
@@ -50,7 +47,7 @@ def fetch_story():
         # ops.save_doc(data, filepath) # local
         os.remove(today_date + '.csv')
     except:
-    	print(str(sys.exc_info()))
+        print(str(sys.exc_info()))
         return jsonify({'API': "Topicverse", 'call': "fetchstory:" + story_type, "status": 'Failure'})
     end_time = time.time()
     elapsed_time = end_time - start_time
