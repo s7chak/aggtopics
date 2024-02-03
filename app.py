@@ -30,7 +30,7 @@ def fetch_story(type):
         data = ops.process_article_soups(soups, exc_list)
         ops.do_text_preprocessing(data)
         data.to_csv(today_date + '.csv', index=False)
-        filepath = story_type.lower()+'/'+today_date + '.csv'
+        filepath = today_date + '.csv'
         ops.upload_blob(filepath, bucket_name)
         # ops.save_doc(data, filepath) # local
         os.remove(today_date + '.csv')
