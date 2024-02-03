@@ -3,10 +3,10 @@ pandas
 bs4
 lxml
 genesis
-spacy
+#spacy
 nltk
 requests
 google-cloud-storage
 matplotlib
 wordcloud
-pyldavis
+#pyldavis
