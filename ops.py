@@ -6,15 +6,15 @@ import matplotlib.pyplot as plt
 import nltk
 import os
 import pandas as pd
-import pandas as pd
-
 import re
 import requests
+import sys
 import time
 from bs4 import BeautifulSoup
 from collections import Counter
 from datetime import datetime
 from flask import Flask, request
+from google.cloud import storage
 # from pyLDAvis import gensim
 # from gensim.corpora import Dictionary
 # from gensim.models import LdaModel, CoherenceModel
@@ -24,7 +24,7 @@ from nltk import word_tokenize, WordNetLemmatizer
 from nltk.corpus import stopwords
 from pathlib import Path
 from wordcloud import WordCloud
-from google.cloud import storage
+
 import ops
 
 
@@ -101,7 +101,7 @@ def get_articles(souple, exc_list):
             alist.append(article)
         except:
             something = title if title else ''
-            print("Article named: ", something, " : content not found.", sys.exc_info()[1])
+            print("Article named: ", something, " : content not found.", str(sys.exc_info()[1]))
 
     return alist
 
