@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-ENV PORT 8091
+ENV PORT 8080
 
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt
@@ -20,4 +20,4 @@ ENV NAME AggTopics
 
 # Run app.py when the container launches
 #CMD ["python", "app.py"]
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
