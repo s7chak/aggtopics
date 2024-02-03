@@ -8,7 +8,9 @@ import base64
 import sys
 import os
 import nltk
+import nltk.data
 import ops
+
 app = Flask(__name__)
 
 bucket_name = 'a-storyverse'
@@ -77,8 +79,9 @@ def email_test():
         message.send()
     except:
         print('Email failed: ', str(sys.exc_info()))
-
+        return
     print('Email sent')
+    return
 
 
 @app.route('/', methods=['POST'])

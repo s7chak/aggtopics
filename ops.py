@@ -23,8 +23,8 @@ from nltk import word_tokenize, WordNetLemmatizer
 from nltk.corpus import stopwords
 from pathlib import Path
 from wordcloud import WordCloud
-nltk.download('punkt')
-nltk.download('stopwords')
+# nltk.download('punkt')
+# nltk.download('stopwords')
 
 
 def fetch_article_soups(sources, feed_types):
