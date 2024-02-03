@@ -152,6 +152,7 @@ def upload_blob(filename, bucket_name):
         blob_data.upload_from_filename(filename)
     except:
         print("Could not upload to bucket.")
+        return
     print('File saved.')
 
 
