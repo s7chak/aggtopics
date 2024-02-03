@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 from collections import Counter
 from datetime import datetime
 from flask import Flask, request
-# from google.cloud import storage
+from google.cloud import storage
 # from pyLDAvis import gensim
 # from gensim.corpora import Dictionary
 # from gensim.models import LdaModel, CoherenceModel
@@ -142,16 +142,16 @@ def clean_text(text, exc_list):
 
 
 
-# def upload_blob(filename, bucket_name):
-#     storage_client = storage.Client()
-#     print('Saving to bucket')
-#     try:
-#         bucket = storage_client.get_bucket(bucket_name)
-#         blob_data = bucket.blob(f'{filename}')
-#         blob_data.upload_from_filename(filename)
-#     except:
-#         print("Could not upload to bucket.")
-#     print('File saved.')
+def upload_blob(filename, bucket_name):
+    storage_client = storage.Client()
+    print('Saving to bucket')
+    try:
+        bucket = storage_client.get_bucket(bucket_name)
+        blob_data = bucket.blob(f'{filename}')
+        blob_data.upload_from_filename(filename)
+    except:
+        print("Could not upload to bucket.")
+    print('File saved.')
 
 
 def generate_wordcloud(text):
