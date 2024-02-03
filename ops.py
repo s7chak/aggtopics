@@ -143,13 +143,13 @@ def clean_text(text, exc_list):
 
 
 
-def upload_blob(filename, bucket_name):
+def upload_blob(filename, folder, bucket_name):
     storage_client = storage.Client()
     print('Saving to bucket')
     try:
         bucket = storage_client.get_bucket(bucket_name)
         blob_data = bucket.blob(f'{filename}')
-        blob_data.upload_from_filename(filename)
+        blob_data.upload_from_filename(folder+'/'+filename)
     except:
         print("Could not upload to bucket.")
         return

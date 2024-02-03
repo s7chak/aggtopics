@@ -47,7 +47,7 @@ def fetch_story():
         ops.do_text_preprocessing(data)
         data.to_csv(today_date + '.csv', index=False)
         filepath = today_date + '.csv'
-        ops.upload_blob(filepath, bucket_name)
+        ops.upload_blob(filepath, story_type, bucket_name)
         # ops.save_doc(data, filepath) # local
         os.remove(today_date + '.csv')
     except:
