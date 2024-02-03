@@ -35,7 +35,7 @@ except:
 
 @app.route('/fetchstory', methods=['POST'])
 def fetch_story():
-	request_data = request.get_json()
+    request_data = request.get_json()
     story_type = request_data.get('type').lower()
     # story_type = request.args.get('type').lower()
     print("Starting daily story fetch: ", story_type)
