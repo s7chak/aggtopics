@@ -33,9 +33,9 @@ try:
 except:
     print("NLTK Load failure.", str(sys.exc_info()))
 
-@app.route('/fetchstory', methods=['POST', 'GET'])
+@app.route('/fetchstory', methods=['POST'])
 def fetch_story():
-    print(request.args)
+    print(str(request.args))
     story_type = request.args.get('type').lower()
     print("Starting daily story fetch: ", story_type)
     start_time = time.time()
