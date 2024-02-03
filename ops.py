@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 from collections import Counter
 from datetime import datetime
 from flask import Flask, request
-from google.cloud import storage
+# from google.cloud import storage
 # from pyLDAvis import gensim
 # from gensim.corpora import Dictionary
 # from gensim.models import LdaModel, CoherenceModel
@@ -25,7 +25,11 @@ from nltk.corpus import stopwords
 from pathlib import Path
 from wordcloud import WordCloud
 
-import ops
+root = os.path.dirname(os.path.abspath(__file__))
+download_dir = os.path.join(root, 'nltk_data')
+nltk.data.load(
+    os.path.join(download_dir, 'tokenizers/punkt/english.pickle')
+)
 
 
 def fetch_article_soups(sources, feed_types):
@@ -143,16 +147,16 @@ def clean_text(text, exc_list):
 
 
 
-def upload_blob(filename, bucket_name):
-    storage_client = storage.Client()
-    print('Saving to bucket')
-    try:
-        bucket = storage_client.get_bucket(bucket_name)
-        blob_data = bucket.blob(f'{filename}')
-        blob_data.upload_from_filename(filename)
-    except:
-        print("Could not upload to bucket.")
-    print('File saved.')
+# def upload_blob(filename, bucket_name):
+#     storage_client = storage.Client()
+#     print('Saving to bucket')
+#     try:
+#         bucket = storage_client.get_bucket(bucket_name)
+#         blob_data = bucket.blob(f'{filename}')
+#         blob_data.upload_from_filename(filename)
+#     except:
+#         print("Could not upload to bucket.")
+#     print('File saved.')
 
 
 def generate_wordcloud(text):

@@ -19,7 +19,7 @@ with open(json_file_path, 'r') as json_file:
 with open(json_file_path, 'r') as json_file:
     exc_map = json.load(json_file)
 
-@app.route('/fetchstory', methods=['POST'])
+@app.route('/fetchstory', methods=['POST', 'GET'])
 def fetch_story():
     print(request.args)
     story_type = request.args.get('type').lower()
