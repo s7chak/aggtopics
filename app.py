@@ -55,7 +55,7 @@ def test():
 
 
 @app.route('/param', methods=['POST'])
-def test():
+def params():
     print('Reached API test params', str(request.args))
     return jsonify({"API":"Topicverse", "Version": '1.0'})
 
