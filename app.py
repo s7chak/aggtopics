@@ -61,6 +61,24 @@ def fetch_story():
     print(f"Story fetch ended for type:",story_type)
     return jsonify({'API':"Topicverse", 'call': "fetchstory:"+story_type, "status": 'Complete'})
 
+@app.route('/emailtest', methods=['POST'])
+def email_test():
+    try:
+        projectid = 'topicverse'
+        sender_address = f"summary@[{projectid}].appspotmail.com"
+        message = mail.EmailMessage(
+            sender=sender_address,
+            subject="Test Email")
+
+        message.to = "Subh <subhayuchakr@gmail.com>"
+        message.body = """
+        Test email.
+        """
+        message.send()
+    except:
+        print('Email failed: ', str(sys.exc_info()))
+
+    print('Email sent')
 
 
 @app.route('/', methods=['POST'])
