@@ -32,6 +32,7 @@ try:
     nltk.data.load(
         os.path.join(download_dir, 'tokenizers/punkt/english.pickle')
     )
+    os.environ['NLTK_DATA'] = download_dir
     print('~~~NLTK loaded~~~')
 except:
     print("NLTK Load failure.", str(sys.exc_info()))

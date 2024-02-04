@@ -122,23 +122,27 @@ def get_body(a):
 
 def clean_text(text, exc_list):
     text = text.lower()
-    text.replace("\u00A0", " ").replace('.','').replace(',','').replace(':',' ').replace('\'','').replace("..."," ").replace("  "," ").strip()
-    pattern = r'<\/[^>]+>$'
-    match = re.search(pattern, text)
-    if match:
-        content_after_last_tag = match.group()
-        text = content_after_last_tag
-    else:
-        text = re.sub(r'<.*?>', '', text)
-    text = ''.join(e for e in text if e.isalnum() or e.isspace())
-    for keyword in exc_list:
-        if keyword in text:
-            text = text.replace(keyword, '')
-    words = nltk.word_tokenize(text)
-    stop_words = set(stopwords.words('english'))
-    filtered_words = [word for word in words if word.lower() not in stop_words]
-    filtered_text = ' '.join(filtered_words)
-    return filtered_text
+    try:
+        text.replace("\u00A0", " ").replace('.','').replace(',','').replace(':',' ').replace('\'','').replace("..."," ").replace("  "," ").strip()
+        pattern = r'<\/[^>]+>$'
+        match = re.search(pattern, text)
+        if match:
+            content_after_last_tag = match.group()
+            text = content_after_last_tag
+        else:
+            text = re.sub(r'<.*?>', '', text)
+        text = ''.join(e for e in text if e.isalnum() or e.isspace())
+        for keyword in exc_list:
+            if keyword in text:
+                text = text.replace(keyword, '')
+        words = nltk.word_tokenize(text)
+        stop_words = set(stopwords.words('english'))
+        filtered_words = [word for word in words if word.lower() not in stop_words]
+        filtered_text = ' '.join(filtered_words)
+        return filtered_text
+    except:
+        print('Failure cleaning text: ',str(sys.exc_info()))
+        return text
 
 def save_doc(df, filepath): # local
     df.to_csv(filepath)
