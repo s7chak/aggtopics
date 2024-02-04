@@ -19,8 +19,8 @@ from flask import Flask, request
 # from gensim.models import LdaModel, CoherenceModel
 # import pyLDAvis
 from io import BytesIO
-from nltk import word_tokenize, WordNetLemmatizer
-from nltk.corpus import stopwords
+# from nltk import word_tokenize, WordNetLemmatizer
+# from nltk.corpus import stopwords
 from pathlib import Path
 from wordcloud import WordCloud
 # nltk.download('punkt')
@@ -135,9 +135,19 @@ def clean_text(text, exc_list):
         for keyword in exc_list:
             if keyword in text:
                 text = text.replace(keyword, '')
-        words = nltk.word_tokenize(text)
-        stop_words = set(stopwords.words('english'))
-        filtered_words = [word for word in words if word.lower() not in stop_words]
+        # words = nltk.word_tokenize(text)
+        # stop_words = set(stopwords.words('english'))
+        # filtered_words = [word for word in words if word.lower() not in stop_words]
+
+        # Non NLTK
+        words = text.split()
+        common_stop_words = [
+            'the', 'and', 'of', 'to', 'in', 'a', 'is', 'it', 'that', 'was',
+            'for', 'on', 'with', 'as', 'at', 'by', 'from', 'an', 'be', 'this',
+            'which', 'have', 'or', 'one', 'had', 'not', 'but', 'what', 'all', 'were'
+        ]
+        filtered_words = [word for word in words if word.lower() not in common_stop_words]
+
         filtered_text = ' '.join(filtered_words)
         return filtered_text
     except:

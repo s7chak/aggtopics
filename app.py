@@ -7,8 +7,8 @@ import requests
 import base64
 import sys
 import os
-import nltk
-import nltk.data
+# import nltk
+# import nltk.data
 import ops
 import google.appengine.api
 
@@ -26,16 +26,16 @@ with open(json_file_path, 'r') as json_file:
     exc_map = json.load(json_file)
     print('~~~Exclusions loaded~~~')
 
-try:
-    root = os.path.dirname(os.path.abspath(__file__))
-    download_dir = os.path.join(root, 'nltk_data')
-    nltk.data.load(
-        os.path.join(download_dir, 'tokenizers/punkt/english.pickle')
-    )
-    os.environ['NLTK_DATA'] = download_dir
-    print('~~~NLTK loaded~~~')
-except:
-    print("NLTK Load failure.", str(sys.exc_info()))
+# try:
+#     root = os.path.dirname(os.path.abspath(__file__))
+#     download_dir = os.path.join(root, 'nltk_data')
+#     nltk.data.load(
+#         os.path.join(download_dir, 'tokenizers/punkt/english.pickle')
+#     )
+#     os.environ['NLTK_DATA'] = download_dir
+#     print('~~~NLTK loaded~~~')
+# except:
+#     print("NLTK Load failure.", str(sys.exc_info()))
 
 @app.route('/fetchstory', methods=['POST', 'GET'])
 def fetch_story():
