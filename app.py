@@ -37,7 +37,7 @@ with open(json_file_path, 'r') as json_file:
 # except:
 #     print("NLTK Load failure.", str(sys.exc_info()))
 
-@app.route('/fetchstory', methods=['POST', 'GET'])
+@app.route('/fetchstory', methods=['POST'])
 def fetch_story():
     request_data = request.get_json()
     story_type = request_data.get('type').lower()
@@ -82,9 +82,9 @@ def email_test():
         message.send()
     except:
         print('Email failed: ', str(sys.exc_info()))
-        return
+        return jsonify({'API':"Topicverse", 'call': "emailtest:", "status": 'Failure'})
     print('Email sent')
-    return
+    return jsonify({'API':"Topicverse", 'call': "emailtest:", "status": 'Complete'})
 
 
 @app.route('/', methods=['POST'])
