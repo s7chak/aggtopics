@@ -10,8 +10,10 @@ import os
 import nltk
 import nltk.data
 import ops
+import google.appengine.api
 
 app = Flask(__name__)
+app.wsgi_app = google.appengine.api.wrap_wsgi_app(app.wsgi_app)
 
 bucket_name = 'a-storyverse'
 func_start_time = time.time()

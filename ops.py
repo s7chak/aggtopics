@@ -148,10 +148,13 @@ def upload_blob(data, filename, folder, bucket_name):
     storage_client = storage.Client()
     print('Saving to bucket')
     try:
-        bucket = storage_client.get_bucket(bucket_name)
-        blob_data = bucket.blob(f'{filename}')
-        # blob_data.upload_from_filename(folder+'/'+filename)
-        blob_data.upload_from_string(data.to_csv(), 'text/csv')
+        path = 'gs://'+folder+'/'+filename
+        print(path)
+        data.to_csv(path)
+        # bucket = storage_client.get_bucket(bucket_name)
+        # blob_data = bucket.blob(f'{filename}')
+        # # blob_data.upload_from_filename(folder+'/'+filename)
+        # blob_data.upload_from_string(data.to_csv(), 'text/csv')
     except:
         print("Could not upload to bucket.", str(sys.exc_info()))
         return

@@ -6,7 +6,7 @@ genesis
 #spacy
 nltk
 requests
-google-cloud-storage
 matplotlib
 wordcloud
-#pyldavis
+google-cloud-storage
+appengine-python-standard>=1.0.0
