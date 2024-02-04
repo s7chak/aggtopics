@@ -1,16 +1,13 @@
-from flask import Flask, request, jsonify, json
-from datetime import datetime
-import pandas as pd
-import time
-from bs4 import BeautifulSoup
-import requests
-import base64
-import sys
 import os
-# import nltk
-# import nltk.data
-import ops
+import sys
+import time
+from datetime import datetime
+
 import google.appengine.api
+from flask import Flask, request, jsonify, json
+from google.appengine.api import mail
+
+import ops
 
 app = Flask(__name__)
 app.wsgi_app = google.appengine.api.wrap_wsgi_app(app.wsgi_app)

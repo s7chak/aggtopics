@@ -1,10 +1,7 @@
 import ast
-import base64
 import copy
 import html
 import matplotlib.pyplot as plt
-import nltk
-import os
 import pandas as pd
 import re
 import requests
@@ -13,7 +10,6 @@ import time
 from bs4 import BeautifulSoup
 from collections import Counter
 from datetime import datetime
-from flask import Flask, request
 # from pyLDAvis import gensim
 # from gensim.corpora import Dictionary
 # from gensim.models import LdaModel, CoherenceModel
@@ -26,6 +22,11 @@ from wordcloud import WordCloud
 # nltk.download('punkt')
 # nltk.download('stopwords')
 
+common_stop_words = [
+            'the', 'and', 'of', 'to', 'in', 'a', 'is', 'it', 'that', 'was',
+            'for', 'on', 'with', 'as', 'at', 'by', 'from', 'an', 'be', 'this',
+            'which', 'have', 'or', 'one', 'had', 'not', 'but', 'what', 'all', 'were'
+        ]
 
 def fetch_article_soups(sources, feed_types):
     start_time = time.time()
@@ -69,8 +70,9 @@ def do_text_preprocessing(df):
     start_time = time.time()
     df['Combined_Text'] = df['Title'] + ' ' + df['Body']
     def preprocess_text(text):
-        tokens = word_tokenize(text.lower())
-        tokens = [word for word in tokens if word.isalnum() and word not in stopwords.words('english')]
+        words = text.lower().split()
+        tokens = [word for word in words if word.isalnum() and word.lower() not in common_stop_words]
+        # tokens = [word for word in tokens if word.isalnum() and word not in stopwords.words('english')]
         return tokens
     df['PText'] = df['Combined_Text'].apply(preprocess_text)
     df['PTitle'] = df['Title'].apply(preprocess_text)
@@ -141,11 +143,6 @@ def clean_text(text, exc_list):
 
         # Non NLTK
         words = text.split()
-        common_stop_words = [
-            'the', 'and', 'of', 'to', 'in', 'a', 'is', 'it', 'that', 'was',
-            'for', 'on', 'with', 'as', 'at', 'by', 'from', 'an', 'be', 'this',
-            'which', 'have', 'or', 'one', 'had', 'not', 'but', 'what', 'all', 'were'
-        ]
         filtered_words = [word for word in words if word.lower() not in common_stop_words]
 
         filtered_text = ' '.join(filtered_words)
