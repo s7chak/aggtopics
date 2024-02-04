@@ -159,7 +159,7 @@ def upload_blob(data, filename, folder, bucket_name):
     storage_client = storage.Client()
     print('Saving to bucket')
     try:
-        path = 'gs://'+folder+'/'+filename
+        path = 'gs://'+bucket_name+'/'+folder+'/'+filename
         print(path)
         data.to_csv(path)
         # bucket = storage_client.get_bucket(bucket_name)
