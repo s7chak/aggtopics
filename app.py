@@ -10,8 +10,9 @@ from google.appengine.api import mail
 import ops
 
 app = create_app()
-app = Flask(__name__)
-app.wsgi_app = google.appengine.api.wrap_wsgi_app(app.wsgi_app, use_deferred=True)
+appf = Flask(__name__)
+appf.wsgi_app = google.appengine.api.wrap_wsgi_app(appf.wsgi_app, use_deferred=True)
+app.mount("/v1", WSGIMiddleware(appf))
 
 bucket_name = 'a-storyverse'
 func_start_time = time.time()
