@@ -2,17 +2,16 @@ import os
 import sys
 import time
 from datetime import datetime
-from fastapi.middleware.wsgi import WSGIMiddleware
-import google.appengine.api
+
 from flask import Flask, request, jsonify, json
 from google.appengine.api import mail
 
 import ops
 
-app = create_app()
-appf = Flask(__name__)
-appf.wsgi_app = google.appengine.api.wrap_wsgi_app(appf.wsgi_app, use_deferred=True)
-app.mount("/v1", WSGIMiddleware(appf))
+# app = create_app()
+app = Flask(__name__)
+# appf.wsgi_app = google.appengine.api.wrap_wsgi_app(appf.wsgi_app, use_deferred=True)
+# app.mount("/v1", WSGIMiddleware(appf))
 
 bucket_name = 'a-storyverse'
 func_start_time = time.time()
