@@ -2,13 +2,14 @@ import os
 import sys
 import time
 from datetime import datetime
-
+from fastapi.middleware.wsgi import WSGIMiddleware
 import google.appengine.api
 from flask import Flask, request, jsonify, json
 from google.appengine.api import mail
 
 import ops
 
+app = create_app()
 app = Flask(__name__)
 app.wsgi_app = google.appengine.api.wrap_wsgi_app(app.wsgi_app, use_deferred=True)
 
