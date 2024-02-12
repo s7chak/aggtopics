@@ -1,10 +1,10 @@
 {
   "blog": [
-    "model", "data", "data science", "science", "using", "photo", "image", "author", "updated", "python", "computer",
-    "dataframes", "dataframe", "science", "artificial", "intelligence", "world", "machine", "learning", "ml",
+    "model", "using", "photo", "image", "author", "updated", "python", "computer",
+    "dataframe", "science", "artificial", "intelligence", "world", "machine", "learning", "ml",
     "google", "research", "task", "help", "free", "courses"
   ],
-  "finance": ["money", "stock"],
+  "finance": ["money", "stock", "market"],
   "science": ["science", "new"],
-  "news": ["news", "say", "cnet", "best", "new"]
+  "news": ["news", "say", "cnet", "best", "new", "bloomberg", "said"]
 }
