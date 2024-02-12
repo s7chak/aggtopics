@@ -23,7 +23,7 @@ from wordcloud import WordCloud
 # nltk.download('stopwords')
 
 common_stop_words = [
-            'the', 'and', 'of', 'to', 'in', 'a', 'is', 'it', 'that', 'was',
+            'the', 'and', 'of', 'to', 'in', 'a', 'is', 'it', 'that', 'was', 'are', 'how', 'will', 'has', 'its',
             'for', 'on', 'with', 'as', 'at', 'by', 'from', 'an', 'be', 'this',
             'which', 'have', 'or', 'one', 'had', 'not', 'but', 'what', 'all', 'were'
         ]
