@@ -25,7 +25,7 @@ from wordcloud import WordCloud
 common_stop_words = [
             'the', 'and', 'of', 'to', 'in', 'a', 'is', 'it', 'that', 'was', 'are', 'how', 'will', 'has', 'its',
             'for', 'on', 'with', 'as', 'at', 'by', 'from', 'an', 'be', 'this',
-            'which', 'have', 'or', 'one', 'had', 'not', 'but', 'what', 'all', 'were'
+            'which', 'have', 'or', 'one', 'had', 'not', 'but', 'what', 'all', 'were', 'why', 'who'
         ]
 
 def fetch_article_soups(sources, feed_types):
